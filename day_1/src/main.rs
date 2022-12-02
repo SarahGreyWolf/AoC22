@@ -20,16 +20,12 @@ fn main() -> io::Result<()> {
 
     let mut top_three_total: u32 = 0;
 
-    for _ in 0..3 {
-        let group_calories_clone = group_calories.clone();
-        let calories_iter = group_calories_clone.iter().enumerate();
-        let Some((index, most)) = calories_iter.max_by_key(|(_, c)| *c) else {
-            panic!("Somehow no member was deemed to have the most calories");
-        };
-        println!("The elf with the most calories is {index} and has {most} calories");
-        group_calories.remove(index);
-        top_three_total += *most;
-    }
+    group_calories.sort_by(|a, b| b.cmp(a));
+
+
+    println!("The elf with the most calories has {} calories", group_calories[0]);
+
+    top_three_total += group_calories[0] + group_calories[1] + group_calories[2];
 
     println!("The top 3 elves have {top_three_total} calories in total");
 

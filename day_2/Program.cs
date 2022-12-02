@@ -6,6 +6,9 @@
     const char P_ROCK = 'X';
     const char P_PAPER = 'Y';
     const char P_SCISSOR = 'Z';
+    const char P_LOSE = 'X';
+    const char P_DRAW = 'Y';
+    const char P_WIN = 'Z';
 
     const int SCORE_ROCK = 1;
     const int SCORE_PAPER = 2;
@@ -26,7 +29,7 @@
         int finalScore = 0;
         foreach (var line in input) {
             string[] chars = line.Split(' ');
-            int score = Day2.DetermineScore(chars[0][0], chars[1][0]);
+            int score = Day2.DetermineScorePart2(chars[0][0], chars[1][0]);
             Console.WriteLine("Players this round would be " + score);
             finalScore += score;
         }
@@ -62,6 +65,37 @@
             return SCORE_ROCK;
         }
         if (opponent == OPP_PAPER && player == P_SCISSOR) {
+            return SCORE_SCISSOR + WIN;
+        }
+        return 0;
+    }
+
+    public static int DetermineScorePart2(char opponent, char player) {
+        if (opponent == OPP_ROCK && player == P_DRAW) {
+            return SCORE_ROCK + DRAW;
+        }
+        if (opponent == OPP_PAPER && player == P_DRAW) {
+            return SCORE_PAPER + DRAW;
+        }
+        if (opponent == OPP_SCISSOR && player == P_DRAW) {
+            return SCORE_SCISSOR + DRAW;
+        }
+        if (opponent == OPP_ROCK && player == P_LOSE) {
+            return SCORE_SCISSOR;
+        }
+        if (opponent == OPP_ROCK && player == P_WIN) {
+            return SCORE_PAPER + WIN;
+        }
+        if (opponent == OPP_SCISSOR && player == P_LOSE) {
+            return SCORE_PAPER;
+        }
+        if (opponent == OPP_SCISSOR && player == P_WIN) {
+            return SCORE_ROCK + WIN;
+        }
+        if (opponent == OPP_PAPER && player == P_LOSE) {
+            return SCORE_ROCK;
+        }
+        if (opponent == OPP_PAPER && player == P_WIN) {
             return SCORE_SCISSOR + WIN;
         }
         return 0;

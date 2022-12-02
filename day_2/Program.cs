@@ -26,20 +26,25 @@
         string[] input = File.ReadAllLines(path);
 
 
-        int finalScore = 0;
+        int finalScoreFirst = 0;
+        int finalScoreSecond = 0;
         foreach (var line in input) {
             string[] chars = line.Split(' ');
-            int score = Day2.DetermineScorePart2(chars[0][0], chars[1][0]);
-            Console.WriteLine("Players this round would be " + score);
-            finalScore += score;
+            int score1 = Day2.DetermineScorePart1(chars[0][0], chars[1][0]);
+            int score2 = Day2.DetermineScorePart2(chars[0][0], chars[1][0]);
+            Console.WriteLine("Players this round would be " + score1 + " with strategy 1");
+            Console.WriteLine("Players this round would be " + score2 + " with strategy 2");
+            finalScoreFirst += score1;
+            finalScoreSecond += score2;
         }
 
-        Console.WriteLine("Players final score would be " + finalScore);
+        Console.WriteLine("Players final score for strategy 1 would be " + finalScoreFirst);
+        Console.WriteLine("Players final score for strategy 2 would be " + finalScoreSecond);
         
         
     }
 
-    public static int DetermineScore(char opponent, char player) {
+    public static int DetermineScorePart1(char opponent, char player) {
         if (opponent == OPP_ROCK && player == P_ROCK) {
             return SCORE_ROCK + DRAW;
         }

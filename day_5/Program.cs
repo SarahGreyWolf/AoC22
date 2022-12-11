@@ -33,48 +33,34 @@ class Day5 {
             }
             instIndex++;
         }
-        Console.WriteLine("Start");
-        foreach(KeyValuePair<int, List<char>> pair in graph.Stacks) {
-            char[] clone = new char[pair.Value.Count()];
-            pair.Value.CopyTo(clone);
-            Console.WriteLine("Key: "+pair.Key);
-            clone.Reverse();
-            foreach(char c in clone) {
-                Console.WriteLine("\t"+c);
-            }
-        }
 
         for(int i=0; i<processedInstructions.GetLength(0); i++) {
-            Console.WriteLine("Instruction Number "+i);
             graph.MoveTopItem(processedInstructions[i,1], processedInstructions[i,2], processedInstructions[i,0]);
-            foreach(KeyValuePair<int, List<char>> pair in graph.Stacks) {
-                char[] clone = new char[pair.Value.Count()];
-                pair.Value.CopyTo(clone);
-                Console.WriteLine("Key: "+pair.Key);
-                clone.Reverse();
-                foreach(char c in clone) {
-                    Console.WriteLine("\t"+c);
-                }
-            }
         }
 
 
 
-        Console.WriteLine("Final");
-        foreach(KeyValuePair<int, List<char>> pair in graph.Stacks) {
-            char[] clone = new char[pair.Value.Count()];
-            pair.Value.CopyTo(clone);
-            Console.WriteLine("Key: "+pair.Key);
-            clone.Reverse();
-            foreach(char c in clone) {
-                Console.WriteLine("\t"+c);
-            }
+        Console.WriteLine("The resulting top items for Part 1 are:");
+        for(int i=0; i<graph.Stacks.Count; i++) {
+            if (i < graph.Stacks.Count - 1)
+                Console.Write(graph.GetTopItem(i+1)+",");
+            else
+                Console.Write(graph.GetTopItem(i+1)+"\n");
         }
 
-        for(int i=0; i<graph.Stacks.Count(); i++) {
-            Console.WriteLine(graph.GetTopItem(i+1));
+        graph = new Graph(diagram);
+
+        for(int i=0; i<processedInstructions.GetLength(0); i++) {
+            graph.MoveTopGroup(processedInstructions[i,1], processedInstructions[i,2], processedInstructions[i,0]);
         }
 
+        Console.WriteLine("The resulting top items for Part 2 are:");
+        for(int i=0; i<graph.Stacks.Count; i++) {
+            if (i < graph.Stacks.Count - 1)
+                Console.Write(graph.GetTopItem(i+1)+",");
+            else
+                Console.Write(graph.GetTopItem(i+1)+"\n");
+        }
 
 
 
@@ -145,11 +131,45 @@ class Graph {
         try {
             Stacks.TryGetValue(stackNum, out stack);
             if (stack == null) return ';';
-            return stack[stack.Count()-1];
+            return stack[stack.Count-1];
         } catch(KeyNotFoundException ex) {
             Console.WriteLine(ex.Message);
             return ';';
         }
+    }
+
+    public bool MoveTopGroup(int fromStack, int toStack, int quantity) {
+        if (!Stacks.ContainsKey(fromStack)) return false;
+        if (!Stacks.ContainsKey(toStack)) return false;
+        List<char> from = new List<char>();
+        List<char> to = new List<char>();
+
+        try {
+            Stacks.TryGetValue(fromStack, out from);
+            if (from == null) return false;
+            Stacks.TryGetValue(toStack, out to);
+            if (to == null) return false;
+            if (quantity > from.Count) return false;
+            List<char> toMove = new List<char>();
+            for (int i = 0; i < quantity; i++) {
+                toMove.Add(from[from.Count-1-i]);
+            }
+            int initialCount = from.Count;
+            for (int i = 0; i < quantity; i++) {
+                from.RemoveAt(initialCount-1-i);
+            }
+            toMove.Reverse();
+            foreach (char c in toMove) {
+                to.Add(c);
+            }
+        } catch(KeyNotFoundException ex) {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+
+
+        return true;
+
     }
 
     public bool MoveTopItem(int fromStack, int toStack, int quantity) {
